@@ -1,0 +1,24 @@
+x-default-opts: &default-opts 
+  restart: unless-stopped
+  tty: true
+  stdin_open: true
+  privileged: true
+  ipc: private
+
+services:
+  ssh-tailscale:
+    <<: *default-opts
+    container_name: ssh-tailscale
+    build: 
+      context: .
+      dockerfile: dockerfile.tailscale
+    command: sh -c "tailscaled & exec tail -f /dev/null"
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    networks:
+      - ssh-server
+
+networks:
+  ssh-server:
+    name: ssh-server
+    driver: bridge

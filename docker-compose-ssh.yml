@@ -1,0 +1,17 @@
+x-default-opts: &default-opts
+  restart: unless-stopped
+  tty: true
+  stdin_open: true
+  privileged: false
+  ipc: private
+
+services:
+  ssh:
+    <<: *default-opts
+    image: tsukisama9292/dev:ssh-rolling
+    networks:
+      - ssh-server
+
+networks:
+  ssh-server:
+    external: true
