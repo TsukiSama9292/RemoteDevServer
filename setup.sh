@@ -14,7 +14,7 @@ echo "gateway=$gateway" > ./rds-server/docker-host/rds-vpn.env
 
 # 預設值
 Tailscale="false"
-Wireguard="true"
+Wireguard="false"
 # 解析命令列參數
 PARSED_OPTS=$(getopt -o "" --long Tailscale:,Wireguard: -- "$@")
 eval set -- "$PARSED_OPTS"
@@ -43,12 +43,12 @@ fi
 # 啟動 Docker Host 容器
 echo "Setup Docker Host Container..."
 cd ./rds-server/rds-docker-host
-docker-compose build --no-cache
+# docker-compose build --no-cache
 docker-compose up -d
 cd ../..
 
 # 啟動 Server 容器
 cd ./rds-server
-docker-compose build --no-cache
+# docker-compose build --no-cache
 docker-compose up -d
 cd ..

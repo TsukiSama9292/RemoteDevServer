@@ -1,20 +1,30 @@
-```bash
-docker-compose -f docker-compose-tailscale.yml down
-docker-compose -f docker-compose-tailscale.yml build --no-cache
-docker-compose -f docker-compose-tailscale.yml up -d
-```
-```bash
-docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ssh-tailscale
-docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ssh-server-ssh-1
-```
+# RemoteDevServer (RDS)
+## 說明
+專門為需要遠端開發的團隊設計  
+可支援 SSH/VNC/RDP...etc 遠端協議  
+基於 Wireguard VPN 提供 VPN 服務(需公開IP:Port)
+針對無公開 IP:Port 的環境
+可使用 Tailscale
+
+## 操作
+### 授權啟動腳本
 ```bash
 chmod +x setup.sh
-./setup.sh --Tailscale true --Wireguard false
 ```
+### 以 Wireguard VPN 啟動 RDS 伺服器
+```bash
+./setup.sh --Wireguard true
+```
+### 以 Tailscale 啟動 RDS 伺服器
+```bash
+./setup.sh --Tailscale true
+```
+### 無 VPN 啟動 RDS 伺服器
+```bash
+./setup.sh
+```
+### 移除 RDS 伺服器
 ```bash
 chmod +x remove.sh
 ./remove.sh
-```
-```bash
-docker network inspect -f '{{range .IPAM.Config}}{{.Subnet}}{{end}}' rds-vpn
 ```
