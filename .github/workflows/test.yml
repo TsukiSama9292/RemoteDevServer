@@ -19,3 +19,7 @@ jobs:
       with:
         compose-file: ./docker-compose.yml
         cwd: ./rds-server/rds-docker-host/
+    
+    - name: Unit Test
+      run: |
+        docker exec rds-docker-host bash -c "cd /app && pytest -s"
