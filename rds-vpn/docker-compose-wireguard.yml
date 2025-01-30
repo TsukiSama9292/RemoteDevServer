@@ -9,7 +9,7 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Etc/UTC
-      - SERVERURL=122.100.107.164
+      - SERVERURL=${SERVER_IP}
       - SERVERPORT=51820
       - PEERS=500
       - PEERDNS=8.8.8.8

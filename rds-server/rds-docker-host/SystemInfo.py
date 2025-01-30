@@ -9,6 +9,7 @@ import docker
 import re
 from dotenv import load_dotenv
 router = APIRouter()
+client = docker.from_env()
 @router.get("/system-info")
 async def get_system_info():
     # 取得 CPU 核心數量
@@ -26,7 +27,7 @@ async def get_system_info():
         gpu_count = 0
     
     # 取得硬碟使用量
-    client = docker.from_env()
+    
     container = client.containers.run(
         "busybox:latest",
         "df -h /",
@@ -54,7 +55,6 @@ async def get_system_info():
     }
 @router.get("/network-info")
 async def get_network_info():
-    load_dotenv("/app/rds-vpn.env")
-    # 取得網路資訊
-    gateway = os.getenv("gateway")
-    return {"GATEWAY": gateway}
+    network_name = 'rds-vpn'
+    network = client.networks.get(network_name)
+    return {"GATEWAY":  network.attrs['IPAM']['Config'][0]['Subnet']}

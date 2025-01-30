@@ -7,7 +7,7 @@
 ## 操作
 ### 授權啟動腳本
 ```bash
-chmod +x setup.sh
+chmod +x ./*.sh
 ```
 ### 以 Wireguard VPN 啟動 RDS 伺服器
 ```bash
@@ -23,6 +23,5 @@ chmod +x setup.sh
 ```
 ### 移除 RDS 伺服器
 ```bash
-chmod +x remove.sh
 ./remove.sh
 ```

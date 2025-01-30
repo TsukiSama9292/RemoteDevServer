@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# 錯誤檢查
+set -e
+
+error_handler() {
+    echo "發生錯誤，請根據錯誤修正..."
+    exit 1
+    ./remove.sh
+}
+
+trap error_handler ERR
+
 # 執行初始化腳本
 cd ./script
 chmod +x ./*
@@ -8,9 +19,12 @@ chmod +x ./*
 cd ..
 
 # 建立 Docker 網路
-docker network create rds-vpn
-gateway=$(docker network inspect -f '{{range .IPAM.Config}}{{.Subnet}}{{end}}' rds-vpn)
-echo "gateway=$gateway" > ./rds-server/docker-host/rds-vpn.env
+source .env
+SUBNET="10.$((HOST_COUNT + 100)).0.0/16"
+docker network create --driver bridge --subnet=$SUBNET rds-vpn
+GATEWAY=$(docker network inspect -f '{{range .IPAM.Config}}{{.Subnet}}{{end}}' rds-vpn)
+echo "SERVER_IP=$SERVER_IP" > ./rds-vpn/.env
+echo "GATEWAY=$GATEWAY" >> ./rds-vpn/.env
 
 # 預設值
 Tailscale="false"
