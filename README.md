@@ -2,8 +2,8 @@
 ## 說明
 專門為需要遠端開發的團隊設計  
 可支援 SSH/VNC/RDP...etc 遠端協議  
-基於 Wireguard VPN 提供 VPN 服務(需公開IP:Port)
-針對無公開 IP:Port 的環境
+基於 Wireguard VPN 提供 VPN 服務(需公開IP:Port)  
+針對無公開 IP:Port 的環境  
 可使用 Tailscale
 
 ## 操作
