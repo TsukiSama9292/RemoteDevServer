@@ -6,12 +6,9 @@ x-default-opts: &default-opts
   ipc: private
 
 services:
-  ssh:
+  nginx:
     <<: *default-opts
-    image: tsukisama9292/dev:ssh-rolling
-    networks:
-      - rds-vpn
+    image: nginx:latest
+    ports:
+      - "50001:80"
 
-networks:
-  rds-vpn:
-    external: true

@@ -7,14 +7,7 @@ docker-compose -f docker-compose-tailscale.yml up -d
 docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ssh-tailscale
 docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ssh-server-ssh-1
 ```
-```bash
-tailscale up
-```
-```bash
-sysctl -w net.ipv4.ip_forward=1
-tailscale up --advertise-routes=172.27.0.0/16
-```
-```bash
+
 docker run -t -d --network=ssh-server alpine:latest
 ```
 ```bash
@@ -30,4 +23,15 @@ done
 ```
 ```bash
 docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' container255
+```
+```bash
+chmod +x setup.sh
+./setup.sh --Tailscale true --Wireguard false
+```
+```bash
+chmod +x remove.sh
+./remove.sh
+```
+```bash
+docker network inspect -f '{{range .IPAM.Config}}{{.Subnet}}{{end}}' rds-vpn
 ```

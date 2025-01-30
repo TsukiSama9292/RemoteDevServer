@@ -12,13 +12,17 @@ services:
     build: 
       context: .
       dockerfile: dockerfile.tailscale
+    volumes:
+      - tailscale:/var/lib/tailscale
     command: sh -c "tailscaled & exec tail -f /dev/null"
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
     networks:
-      - ssh-server
+      - rds-vpn
 
 networks:
-  ssh-server:
-    name: ssh-server
-    driver: bridge
+  rds-vpn:
+    external: true
+    
+volumes:
+  tailscale: {}
