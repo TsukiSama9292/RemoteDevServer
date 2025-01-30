@@ -1,0 +1,21 @@
+x-default-opts: &default-opts
+  restart: always
+  tty: true
+  stdin_open: true
+  privileged: true
+  ipc: private
+
+services:
+  # server 專用 docker host
+  rds-docker-host:
+    <<: *default-opts
+    build:
+      context: ./docker-host/
+      dockerfile: ./Dockerfile
+    container_name: rds-docker-host
+    volumes:
+      - ./docker-host:/app
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "52375:80"
+    entrypoint: /bin/sh -c "cd /app && gunicorn --bind 0.0.0.0:80 -w 1 -k uvicorn.workers.UvicornWorker main:app"
