@@ -10,11 +10,11 @@ services:
   rds-docker-host:
     <<: *default-opts
     build:
-      context: ./docker-host/
+      context: ./
       dockerfile: ./Dockerfile
     container_name: rds-docker-host
     volumes:
-      - ./docker-host:/app
+      - ./:/app
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - "52375:80"

@@ -7,6 +7,7 @@ import os
 import subprocess
 import docker
 import re
+from dotenv import load_dotenv
 router = APIRouter()
 @router.get("/system-info")
 async def get_system_info():
@@ -51,3 +52,9 @@ async def get_system_info():
         "DISK_USED": used_size,
         "DISK_USAGE_PERCENT": usage_percent,
     }
+@router.get("/network-info")
+async def get_network_info():
+    load_dotenv("/app/rds-vpn.env")
+    # 取得網路資訊
+    gateway = os.getenv("gateway")
+    return {"GATEWAY": gateway}

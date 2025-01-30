@@ -44,7 +44,7 @@ services:
       - ./api:/app
     networks:
       - rds-server
-    entrypoint: /bin/sh -c "cd /app && chmod +x ./alembic.sh && ./alembic.sh && gunicorn --bind 0.0.0.0:80 -w 1 -k uvicorn.workers.UvicornWorker main:app"
+    # entrypoint: /bin/sh -c "cd /app && chmod +x ./alembic.sh && ./alembic.sh && gunicorn --bind 0.0.0.0:80 -w 1 -k uvicorn.workers.UvicornWorker main:app"
   # server 專用 nginx
   rds-nginx:
     <<: *default-opts
