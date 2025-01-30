@@ -56,5 +56,13 @@ async def get_system_info():
 @router.get("/network-info")
 async def get_network_info():
     network_name = 'rds-vpn'
-    network = client.networks.get(network_name)
-    return {"GATEWAY":  network.attrs['IPAM']['Config'][0]['Subnet']}
+    try:
+        # 獲取名為 'rds-vpn' 的網路
+        network = client.networks.get(network_name)
+        # 取得子網路資訊
+        subnet = network.attrs['IPAM']['Config'][0]['Subnet']
+        return {"GATEWAY": subnet}
+    except docker.errors.NotFound:
+        return {"error": f"Network '{network_name}' not found"}
+    except KeyError:
+        return {"error": "Subnet information not available"}

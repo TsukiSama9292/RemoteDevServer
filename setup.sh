@@ -57,7 +57,7 @@ fi
 # 啟動 Docker Host 容器
 echo "Setup Docker Host Container..."
 cd ./rds-server/rds-docker-host
-# docker-compose build --no-cache
+docker-compose build --no-cache
 docker-compose up -d
 cd ../..
 
