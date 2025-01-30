@@ -12,7 +12,7 @@ app = FastAPI(
     openapi_url=None,     # 關閉 OpenAPI JSON
     debug=False           # 關閉 debug 模式
 )
-from SystemInfo import router as systeminfo_router
+from Info import router as info_router
 from Docker import router as docker_router
-app.include_router(systeminfo_router)
+app.include_router(info_router)
 app.include_router(docker_router)
