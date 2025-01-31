@@ -8,9 +8,12 @@ import psutil
 import pyopencl as cl
 
 client = TestClient(app)
+docker_client = docker.from_env()
+container_id = None
+
 
 # 測試資訊路由
-## 測試系統資訊
+## 測試主機系統資訊，取得 CPU/RAM/GPU/DISK 資訊
 def test_system_info():
     print("\n\nTesting /info/system")
     response = client.get("/info/system")
@@ -46,7 +49,7 @@ def test_system_info():
     rj = response.json()
     if rj["CPU_COUNT"] != cpu_count or rj["RAM_TOTAL_MB"] != mem_total or rj["GPU_COUNT"] != gpu_count or rj["DISK_TOTAL_GB"] != disk_total :
         assert False, f"JSON Content: {rj}"
-## 測試網路資訊
+## 測試 Docker 容器池網路資訊，取得 rds-vpn Subnet
 def test_network_info():
     print("\n\nTesting /info/network")
     response = client.get("/info/network")
@@ -54,23 +57,42 @@ def test_network_info():
     assert response.status_code == 200, f"Status Code: {response.status_code}"
     # 解析內容
     assert response.json() == {'GATEWAY': '10.100.0.0/16'}, f"JSON Content: {response.json()}"
-## 測試容器資訊
+## 測試 Docker 容器池資訊，取得容器 運行和停止 數量
 def test_container_info():
+    global docker_client
+    container = docker_client.containers.run(
+        image="busybox:latest",
+        tty=True,
+        detach=True,
+        stdout=True,
+        stderr=True,
+        network="rds-vpn"
+    )
     print("\n\nTesting /info/container")
     response = client.get("/info/container")
     # 解析回應狀態
     assert response.status_code == 200, f"Status Code: {response.status_code}"
-    docker_client = docker.from_env()
-    containers = docker_client.containers.list(all=True)
-    running_count = 0
-    paused_count = 0
-    for container in containers:
-        if container.status == 'running':
-            running_count += 1
-        elif container.status == 'paused':
-            paused_count += 1
+    container.remove(force=True)
     # 解析內容
-    assert response.json() == {"RUNNING_COUNT": running_count, "PAUSED_COUNT": paused_count}
+    assert response.json() == {"RUNNING_COUNT": 1, "PAUSED_COUNT": 0}
+## 測試 Docker 容器池資訊，取得容器 id 和 運行狀態
+def test_check_container():
+    global docker_client
+    container = docker_client.containers.run(
+        image="busybox:latest",
+        tty=True,
+        detach=True,
+        stdout=True,
+        stderr=True,
+        network="rds-vpn"
+    )
+    print("\n\nTesting /info/container")
+    response = client.get("/info/check_container")
+    # 解析回應狀態
+    assert response.status_code == 200, f"Status Code: {response.status_code}"
+    container.remove(force=True)
+    # 解析內容
+    assert response.json() == [{"id": container.id, "status": "running"}], f"JSON Content: {response.json()}"
 
 # 測試鏡像路由
 ## 測試拉取鏡像
@@ -99,7 +121,7 @@ def test_remove_image():
     # 解析內容
     assert response.json() == {"message": "Image removed"}, f"JSON Content: {response.json()}"
 
-container_id = None
+
 # 測試容器路由
 ## 測試運行容器
 def test_run_container():

@@ -6,9 +6,9 @@ x-default-opts: &default-opts
   ipc: private
 
 services:
-  ssh-tailscale:
+  rds-tailscale:
     <<: *default-opts
-    container_name: ssh-tailscale
+    container_name: rds-tailscale
     build: 
       context: .
       dockerfile: dockerfile.tailscale

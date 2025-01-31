@@ -45,4 +45,3 @@ async def remove_container(request: RemoveContainer):
     container = client.containers.get(request.container_id)
     container.remove(force=True)
     return JSONResponse(content={"message": "Container removed"}, status_code=200)
-

@@ -13,7 +13,7 @@ import pyopencl as cl
 
 router = APIRouter()
 client = docker.from_env()
-
+# 主機系統資訊，取得 CPU/RAM/GPU/DISK 資訊
 @router.get("/system")
 async def get_system_info():
     # 取得 CPU 資訊
@@ -54,7 +54,7 @@ async def get_system_info():
         "DISK_USED_GB": disk_used,
         "DISK_USAGE_PERCENT": disk_percent,
     }
-
+# Docker 容器池網路資訊，取得 rds-vpn Subnet
 @router.get("/network")
 async def get_network_info():
     network_name = 'rds-vpn'
@@ -68,15 +68,30 @@ async def get_network_info():
         return {"error": f"Network '{network_name}' not found"}
     except KeyError:
         return {"error": "Subnet information not available"}
-
+# Docker 容器池資訊，取得容器 運行和停止 數量
 @router.get("/container")
 async def get_container_info():
-    containers = client.containers.list(all=True)
+    # containers = client.containers.list(all=True)
+    network = client.networks.get('rds-vpn')
+    containers = network.containers
     running_count = 0
     paused_count = 0
     for container in containers:
+        if container.name == 'rds-proxy' or container.name == 'rds-tailscale' or container.name == 'rds-wireguard':
+            continue
         if container.status == 'running':
             running_count += 1
         elif container.status == 'paused':
             paused_count += 1
     return {"RUNNING_COUNT": running_count, "PAUSED_COUNT": paused_count}
+# Docker 容器池資訊，取得容器 id 和 運行狀態
+@router.get("/check_container")
+async def check_container():
+    network = client.networks.get('rds-vpn')
+    containers = network.containers
+    container_list = []
+    for container in containers:
+        if container.name == 'rds-proxy' or container.name == 'rds-tailscale' or container.name == 'rds-wireguard':
+            continue
+        container_list.append({"id": container.id, "status": container.status})
+    return JSONResponse(content=container_list, status_code=200)
