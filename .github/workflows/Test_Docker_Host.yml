@@ -14,7 +14,13 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set up Docker Compose
+    - name: Create Docker Network
+      run: |
+        docker network create --driver bridge --subnet=10.100.0.0/16 rds-container-pool
+        docker network create --driver bridge rds-server
+        docker network create --driver bridge rds-docker-host
+
+    - name: Docker Compose
       uses: hoverkraft-tech/compose-action@v2.0.1
       with:
         compose-file: ./docker-compose.yml
@@ -23,7 +29,4 @@ jobs:
     - name: Unit Test
       run: |
         docker pull busybox:latest
-        docker network create --driver bridge --subnet=10.100.0.0/16 rds-container-pool
-        docker network create --driver bridge rds-server
-        docker network create --driver bridge rds-docker-host
         docker exec rds-docker-host bash -c "cd /app && pytest -s"
