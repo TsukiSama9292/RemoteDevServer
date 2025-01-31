@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
   
 jobs:
-  test:
+  test-docker-host:
     runs-on: ubuntu-latest
 
     steps:
