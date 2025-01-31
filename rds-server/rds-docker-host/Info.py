@@ -54,12 +54,12 @@ async def get_system_info():
         "DISK_USED_GB": disk_used,
         "DISK_USAGE_PERCENT": disk_percent,
     }
-# Docker 容器池網路資訊，取得 rds-vpn Subnet
+# Docker 容器池網路資訊，取得 rds-container-pool Subnet
 @router.get("/network")
 async def get_network_info():
-    network_name = 'rds-vpn'
+    network_name = 'rds-container-pool'
     try:
-        # 獲取名為 'rds-vpn' 的網路
+        # 獲取名為 'rds-container-pool' 的網路
         network = client.networks.get(network_name)
         # 取得子網路資訊
         subnet = network.attrs['IPAM']['Config'][0]['Subnet']
@@ -72,7 +72,7 @@ async def get_network_info():
 @router.get("/container")
 async def get_container_info():
     # containers = client.containers.list(all=True)
-    network = client.networks.get('rds-vpn')
+    network = client.networks.get('rds-container-pool')
     containers = network.containers
     running_count = 0
     paused_count = 0
@@ -87,7 +87,7 @@ async def get_container_info():
 # Docker 容器池資訊，取得容器 id 和 運行狀態
 @router.get("/check_container")
 async def check_container():
-    network = client.networks.get('rds-vpn')
+    network = client.networks.get('rds-container-pool')
     containers = network.containers
     container_list = []
     for container in containers:

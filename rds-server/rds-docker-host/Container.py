@@ -28,7 +28,7 @@ async def new_container(request: RunContainer):
         cpu_period=100000,
         mem_limit=request.mem_limit,
         privileged=request.privileged,
-        network="rds-vpn",
+        network="rds-container-pool",
         tty=True,
         detach=True,
         stdout=True,

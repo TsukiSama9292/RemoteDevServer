@@ -23,5 +23,5 @@ jobs:
     - name: Unit Test
       run: |
         docker pull busybox:latest
-        docker network create --driver bridge --subnet=10.100.0.0/16 rds-vpn
+        docker network create --driver bridge --subnet=10.100.0.0/16 rds-container-pool
         docker exec rds-docker-host bash -c "cd /app && pytest -s"

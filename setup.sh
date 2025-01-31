@@ -20,10 +20,14 @@ cd ..
 # 建立 Docker 網路
 source .env
 SUBNET="10.$((HOST_COUNT + 100)).0.0/16"
-docker network create --driver bridge --subnet=$SUBNET rds-vpn
-GATEWAY=$(docker network inspect -f '{{range .IPAM.Config}}{{.Subnet}}{{end}}' rds-vpn)
+docker network create --driver bridge --subnet=$SUBNET rds-container-pool
+GATEWAY=$(docker network inspect -f '{{range .IPAM.Config}}{{.Subnet}}{{end}}' rds-container-pool)
 echo "SERVER_IP=$SERVER_IP" > ./rds-vpn/.env
 echo "GATEWAY=$GATEWAY" >> ./rds-vpn/.env
+
+docker network create --driver bridge rds-server
+docker network create --driver bridge rds-docker-host
+
 
 # 預設值
 Tailscale="false"
@@ -56,7 +60,7 @@ fi
 # 啟動 Docker Host 容器
 echo "Setup Docker Host Container..."
 cd ./rds-server/rds-docker-host
-docker-compose build --no-cache
+# docker-compose build --no-cache
 docker-compose up -d
 cd ../..
 

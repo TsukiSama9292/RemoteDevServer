@@ -49,7 +49,7 @@ def test_system_info():
     rj = response.json()
     if rj["CPU_COUNT"] != cpu_count or rj["RAM_TOTAL_MB"] != mem_total or rj["GPU_COUNT"] != gpu_count or rj["DISK_TOTAL_GB"] != disk_total :
         assert False, f"JSON Content: {rj}"
-## 測試 Docker 容器池網路資訊，取得 rds-vpn Subnet
+## 測試 Docker 容器池網路資訊，取得 rds-container-pool Subnet
 def test_network_info():
     print("\n\nTesting /info/network")
     response = client.get("/info/network")
@@ -66,7 +66,7 @@ def test_container_info():
         detach=True,
         stdout=True,
         stderr=True,
-        network="rds-vpn"
+        network="rds-container-pool"
     )
     print("\n\nTesting /info/container")
     response = client.get("/info/container")
@@ -84,7 +84,7 @@ def test_check_container():
         detach=True,
         stdout=True,
         stderr=True,
-        network="rds-vpn"
+        network="rds-container-pool"
     )
     print("\n\nTesting /info/check_container")
     response = client.get("/info/check_container")

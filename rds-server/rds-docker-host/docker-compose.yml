@@ -6,7 +6,6 @@ x-default-opts: &default-opts
   ipc: private
 
 services:
-  # server 專用 docker host
   rds-docker-host:
     <<: *default-opts
     build:
@@ -19,3 +18,9 @@ services:
     ports:
       - "52375:80"
     entrypoint: /bin/sh -c "cd /app && gunicorn --bind 0.0.0.0:80 -w 1 -k uvicorn.workers.UvicornWorker main:app"
+    networks:
+      - rds-docker-host
+
+networks:
+  rds-docker-host:
+    external: true

@@ -10,8 +10,8 @@ services:
     <<: *default-opts
     image: tsukisama9292/dev:ssh-rolling
     networks:
-      - rds-vpn
+      - rds-container-pool
 
 networks:
-  rds-vpn:
+  rds-container-pool:
     external: true

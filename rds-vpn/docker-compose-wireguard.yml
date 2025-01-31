@@ -26,12 +26,12 @@ services:
       - net.ipv4.conf.all.src_valid_mark=1
     restart: unless-stopped
     networks:
-      - rds-vpn
+      - rds-container-pool
     
 volumes:
   wireguard-config: {}
   wireguard-modules: {}
 
 networks:
-  rds-vpn:
+  rds-container-pool:
     external: true

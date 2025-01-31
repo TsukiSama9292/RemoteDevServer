@@ -26,11 +26,12 @@ services:
   # server 專用 redis
   rds-redis:
     <<: *default-opts
-    image: redis:7.4.1
+    build: 
+      context: ./redis/
+      dockerfile: ./Dockerfile
     container_name: rds-redis
     volumes:
-      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
-    command: [ "redis-server", "/usr/local/etc/redis/redis.conf" ]
+      - redis:/data
     networks:
       - rds-server
   # server 專用 api
@@ -70,7 +71,7 @@ services:
       - ${PROXY_PORT}:80
     networks:
       - rds-server
-      - rds-vpn
+      - rds-container-pool
   vuetify:
     <<: *default-opts
     image: node:22
@@ -83,11 +84,12 @@ services:
 
 networks:
   rds-server:
-    driver: bridge
-  rds-vpn:
+    external: true
+  rds-container-pool:
     external: true
     
 volumes:
   db: {}
   static: {}
   proxy-domain: {}
+  redis: {}

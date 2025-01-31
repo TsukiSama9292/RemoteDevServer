@@ -6,7 +6,7 @@
 ```bash
 curl -X GET http://127.0.0.1:52375/info/system
 ```
-### Docker 容器池網路資訊，取得 rds-vpn Subnet
+### Docker 容器池網路資訊，取得 rds-container-pool Subnet
 ```bash
 curl -X GET http://127.0.0.1:52375/info/network
 ```
