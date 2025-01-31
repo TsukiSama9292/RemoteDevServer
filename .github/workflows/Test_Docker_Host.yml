@@ -30,3 +30,12 @@ jobs:
       run: |
         docker pull busybox:latest
         docker exec rds-docker-host bash -c "cd /app && pytest -s"
+        cd ./rds-server/rds-docker-host/
+        docker-compose down
+        
+    # # 通過測試後，建立 Docker Image
+    # - name: Build Docker Image
+    #   run: |
+    #     cd ./rds-server/rds-docker-host/
+    #     docker build -t tsukisama9292/rds:docker-host-latest .
+    #     docker push tsukisama9292/rds:docker-host-latest
