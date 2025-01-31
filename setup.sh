@@ -13,8 +13,7 @@ trap error_handler ERR
 
 # 執行初始化腳本
 cd ./script
-chmod +x ./*
-./ubuntu.sh
+chmod +x ./*.sh
 ./docker-pull.sh
 cd ..
 

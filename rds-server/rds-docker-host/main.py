@@ -13,6 +13,10 @@ app = FastAPI(
     debug=False           # 關閉 debug 模式
 )
 from Info import router as info_router
-from Docker import router as docker_router
+# from Docker import router as docker_router
+from Container import router as container_router
+from Image import router as image_router
 app.include_router(info_router, prefix="/info")
-app.include_router(docker_router, prefix="/docker")
+# app.include_router(docker_router, prefix="/docker")
+app.include_router(container_router, prefix="/container")
+app.include_router(image_router, prefix="/image")

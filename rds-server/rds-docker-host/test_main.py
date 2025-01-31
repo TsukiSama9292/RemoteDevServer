@@ -9,6 +9,8 @@ import pyopencl as cl
 
 client = TestClient(app)
 
+# 測試資訊路由
+## 測試系統資訊
 def test_system_info():
     print("\n\nTesting /info/system")
     response = client.get("/info/system")
@@ -44,8 +46,7 @@ def test_system_info():
     rj = response.json()
     if rj["CPU_COUNT"] != cpu_count or rj["RAM_TOTAL_MB"] != mem_total or rj["GPU_COUNT"] != gpu_count or rj["DISK_TOTAL_GB"] != disk_total :
         assert False, f"JSON Content: {rj}"
-
-
+## 測試網路資訊
 def test_network_info():
     print("\n\nTesting /info/network")
     response = client.get("/info/network")
@@ -53,8 +54,7 @@ def test_network_info():
     assert response.status_code == 200, f"Status Code: {response.status_code}"
     # 解析內容
     assert response.json() == {'GATEWAY': '10.100.0.0/16'}, f"JSON Content: {response.json()}"
-
-
+## 測試容器資訊
 def test_container_info():
     print("\n\nTesting /info/container")
     response = client.get("/info/container")
@@ -71,3 +71,61 @@ def test_container_info():
             paused_count += 1
     # 解析內容
     assert response.json() == {"RUNNING_COUNT": running_count, "PAUSED_COUNT": paused_count}
+
+# 測試鏡像路由
+## 測試拉取鏡像
+def test_pull_image():
+    print("\n\nTesting /image/pull_image")
+    response = client.post("/image/pull_image", json={"image": "alpine:latest"})
+    # 解析回應狀態
+    assert response.status_code == 200, f"Status Code: {response.status_code}"
+    # 解析內容
+    if response.json() != {"message": "Image already exists"} and response.json() != {"message": "Image pulled"}:
+        assert False, f"JSON Content: {response.json()}"
+## 測試更新鏡像
+def test_update_image():
+    print("\n\nTesting /image/update_image")
+    response = client.post("/image/update_image", json={"image": "alpine:latest"})
+    # 解析回應狀態
+    assert response.status_code == 200, f"Status Code: {response.status_code}"
+    # 解析內容
+    assert response.json() == {"message": "Image updated"}, f"JSON Content: {response.json()}"
+## 測試移除鏡像
+def test_remove_image():
+    print("\n\nTesting /image/remove_image")
+    response = client.post("/image/remove_image", json={"image": "alpine:latest"})
+    # 解析回應狀態
+    assert response.status_code == 200, f"Status Code: {response.status_code}"
+    # 解析內容
+    assert response.json() == {"message": "Image removed"}, f"JSON Content: {response.json()}"
+
+container_id = None
+# 測試容器路由
+## 測試運行容器
+def test_run_container():
+    global container_id
+    print("\n\nTesting /container/run_container")
+    response = client.post("/container/run_container", json={"image": "busybox:latest"})
+    # 解析回應狀態
+    assert response.status_code == 200, f"Status Code: {response.status_code}"
+    container_id = response.json()["container_id"]
+    # 解析內容
+    assert re.match(r'^[0-9a-f]{64}$', container_id), f"JSON Content: {response.json()}"
+## 測試停止容器
+def test_stop_container():
+    global container_id
+    print("\n\nTesting /container/stop_container")
+    response = client.post("/container/stop_container", json={"container_id": container_id})
+    # 解析回應狀態
+    assert response.status_code == 200, f"Status Code: {response.status_code}"
+    # 解析內容
+    assert response.json() == {"message": "Container stopped"}, f"JSON Content: {response.json()}"
+## 測試移除容器
+def test_remove_container():
+    global container_id
+    print("\n\nTesting /container/remove_container")
+    response = client.post("/container/remove_container", json={"container_id": container_id})
+    # 解析回應狀態
+    assert response.status_code == 200, f"Status Code: {response.status_code}"
+    # 解析內容
+    assert response.json() == {"message": "Container removed"}, f"JSON Content: {response.json()}"
