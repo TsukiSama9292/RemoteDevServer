@@ -86,7 +86,7 @@ def test_check_container():
         stderr=True,
         network="rds-vpn"
     )
-    print("\n\nTesting /info/container")
+    print("\n\nTesting /info/check_container")
     response = client.get("/info/check_container")
     # 解析回應狀態
     assert response.status_code == 200, f"Status Code: {response.status_code}"
