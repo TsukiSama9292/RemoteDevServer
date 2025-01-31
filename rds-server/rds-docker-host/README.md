@@ -50,7 +50,7 @@ curl -X 'POST' \
 curl -X 'POST' \
   'http://localhost:52375/container/run_container' \
   -H 'Content-Type: application/json' \
-  -d '{"image": "busybox:latest", "command": ""}'
+  -d '{"image": "busybox:latest", "command": "", "cpus": 20, "mem_limit": "800m", "privileged": true}'
 ```
 ### 停止容器
 ```bash

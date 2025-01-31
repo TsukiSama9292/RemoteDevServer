@@ -13,12 +13,22 @@ client = docker.from_env()
 # 運行容器
 class RunContainer(BaseModel):
     image: str
-    command: str = None
+    command: str
+    cpus: int = 50
+    mem_limit: str = "512m"
+    privileged: bool = False
 @router.post("/run_container")
 async def new_container(request: RunContainer):
+    if request.cpus <= 0 or request.cpus > 100:
+        return JSONResponse(content={"message": "CPU 計算資源必須大於0且小於等於100"}, status_code=400)
     container = client.containers.run(
         request.image,
         command=request.command,
+        cpu_quota=int(100000*(request.cpus / 100)),
+        cpu_period=100000,
+        mem_limit=request.mem_limit,
+        privileged=request.privileged,
+        network="rds-vpn",
         tty=True,
         detach=True,
         stdout=True,

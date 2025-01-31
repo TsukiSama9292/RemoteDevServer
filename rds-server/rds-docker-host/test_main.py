@@ -127,7 +127,7 @@ def test_remove_image():
 def test_run_container():
     global container_id
     print("\n\nTesting /container/run_container")
-    response = client.post("/container/run_container", json={"image": "busybox:latest"})
+    response = client.post("/container/run_container", json={"image": "busybox:latest", "command": "", "cpus": 20, "mem_limit": "800m", "privileged": True})
     # 解析回應狀態
     assert response.status_code == 200, f"Status Code: {response.status_code}"
     container_id = response.json()["container_id"]
