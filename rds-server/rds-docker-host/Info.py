@@ -10,6 +10,7 @@ import re
 from dotenv import load_dotenv
 router = APIRouter()
 client = docker.from_env()
+
 @router.get("/system-info")
 async def get_system_info():
     # 取得 CPU 核心數量
@@ -20,14 +21,13 @@ async def get_system_info():
         mem_info = f.readlines()
     mem_total = int([line for line in mem_info if line.startswith("MemTotal")][0].split(":")[1].strip().split()[0]) // 1024  # 轉換為 MB
 
-    # 取得 GPU 數量（假設已安裝 NVIDIA 驅動）
+    # 取得 GPU 數量(NVIDIA)
     try:
         gpu_count = int(subprocess.check_output("nvidia-smi -L | wc -l", shell=True).strip())
     except subprocess.CalledProcessError:
         gpu_count = 0
     
     # 取得硬碟使用量
-    
     container = client.containers.run(
         "busybox:latest",
         "df -h /",
@@ -53,6 +53,7 @@ async def get_system_info():
         "DISK_USED": used_size,
         "DISK_USAGE_PERCENT": usage_percent,
     }
+
 @router.get("/network-info")
 async def get_network_info():
     network_name = 'rds-vpn'

@@ -14,5 +14,5 @@ app = FastAPI(
 )
 from Info import router as info_router
 from Docker import router as docker_router
-app.include_router(info_router)
-app.include_router(docker_router)
+app.include_router(info_router, prefix="/info")
+app.include_router(docker_router, prefix="/docker")
