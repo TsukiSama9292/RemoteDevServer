@@ -1,8 +1,11 @@
 # API List
 ## System Infomation
 ```bash
-curl -X GET http://127.0.0.1:52375/info/system-info
+curl -X GET http://127.0.0.1:52375/info/system
 ```
 ```bash
-curl -X GET http://127.0.0.1:52375/network-info
+curl -X GET http://127.0.0.1:52375/info/network
+```
+```bash
+curl -X GET http://127.0.0.1:52375/info/container
 ```
